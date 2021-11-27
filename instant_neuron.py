@@ -21,9 +21,20 @@ class IAN(Neuron):
         self.connections = []
         self.voltage = IAN.resting
         self.id = next(IAN.id_iter)
+        #self.renderer = None
+        #self.position = None
 
     def connect(self, other: Neuron, Synapse: type):
         self.connections.append(Synapse(other))
+
+    # def attach_renderer(self, renderer: NeuronRenderer):
+    #     self.renderer = renderer
+
+    # Neuron position useful mostly for renderer
+    def set_position(self, x, y):
+        #self.position = dict(x=x, y=y)
+        self.x = x
+        self.y = y
 
     def fire(self):
         for synapse in self.connections:
@@ -39,6 +50,11 @@ class IAN(Neuron):
     def update(self):
         # Decay voltage to resting linearly
         self.voltage = max(IAN.resting, self.voltage - IAN.linear_decay)
+
+    #def draw(self):
+        # if self.renderer is None:
+        #     raise Exception('Cannot draw neuron without attaching renderer.')
+        # self.renderer.draw()
 
     def __repr__(self):
         s = f'<IAN_{self.id} voltage={self.voltage} connections={len(self.connections)}>'
