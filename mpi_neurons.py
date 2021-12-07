@@ -26,8 +26,8 @@ if rank == 0:
     tprint('Number of threads:', comm.Get_size())
     # Communicate the total num neurons we want, etc
     config = dict(
-        total_neurons=4000000,
-        total_connections=20,
+        total_neurons=100000,#4000000,
+        total_connections=20000,
     )
 
     # Make total neurons divisible by 6
@@ -46,7 +46,7 @@ if rank == 0:
                 global_connections.add(connection)
                 valid = True
     global_connections = list(global_connections)
-    print('Connections:', global_connections)
+    #print('Connections:', global_connections)
 else:
     config = None
     global_connections = None
