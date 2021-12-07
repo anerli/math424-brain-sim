@@ -123,7 +123,7 @@ if rank == 0:
     update_time_log = []
 
 
-for _ in range(10):
+for _ in range(1000):
     update_start = time.time()
 
     # Up to 100 "stimulus" neurons which recieve random voltages automatically
