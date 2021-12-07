@@ -21,4 +21,15 @@ tprint(f'I am thread {rank}')
 
 if rank == 0:
     # Communicate the total num neurons we want, etc
-    pass
+    config = dict(
+        total_neurons=100
+    )
+    #comm.bcast(config)
+else:
+    # config = comm.recv()
+    # tprint(config)
+    config = None
+
+config = comm.bcast(config, root=0)
+
+print(config)
