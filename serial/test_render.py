@@ -19,7 +19,7 @@ print(len(brain.neurons))
 @window.event
 def on_draw():
     #print('Drawing')
-    start = time.time()
+    #start = time.time()
 
     
 
@@ -40,10 +40,10 @@ def on_draw():
         for synapse in neuron.connections:
             
             render_synapse(neuron, synapse, color=synapse_color)
-    print('Time to draw:', time.time() - start)
+    #print('Time to draw:', time.time() - start)
     
 def update(dt):
-    start = time.time()
+    #start = time.time()
     #print('Updating')
     # for neuron in brain.neurons:
     #     neuron.receive(2)
@@ -54,7 +54,7 @@ def update(dt):
     for neuron in brain.neurons:
         neuron.update()
 
-    print('Time to update:', time.time() - start)
+    #print('Time to update:', time.time() - start)
 
 
 pyglet.clock.schedule_interval(update, 1/120.0)
