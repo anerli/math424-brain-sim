@@ -28,11 +28,15 @@ if rank == 0:
     config = dict(
         total_neurons=int(1e6),#4000000,
         total_connections=int(1e7),
+        total_stimulus=600
     )
 
     # Make total neurons divisible by 6
     while config['total_neurons'] % comm.Get_size() != 0:
         config['total_neurons'] += 1
+
+    while config['total_stimulus'] % comm.Get_size() != 0:
+        config['total_stimulus'] += 1
 
     # Generate random global connections
     global_connections = dict()
@@ -63,6 +67,8 @@ global_connections = comm.bcast(global_connections, root=0)
 
 num_neurons = config['total_neurons'] // comm.Get_size()
 tprint('Number of neurons:', num_neurons)
+
+num_stim = config['total_stimulus'] // comm.Get_size()
 
 
 # Get relative index within a process
@@ -126,8 +132,8 @@ if rank == 0:
 for _ in range(1000):
     update_start = time.time()
 
-    # Up to 100 "stimulus" neurons which recieve random voltages automatically
-    for i in range(min(100, num_neurons)): neurons[i].receive(random.random()*100)
+    # Up to num_stim "stimulus" neurons which recieve random voltages automatically
+    for i in range(min(num_stim, num_neurons)): neurons[i].receive(random.random()*100)
 
     # Maps global neuron indices to any changes in voltages
     updates = dict()

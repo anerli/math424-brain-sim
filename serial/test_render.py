@@ -10,9 +10,12 @@ width=800
 height=600
 window = pyglet.window.Window(width, height)
 
+random.seed(4)
+
 #nr = NeuronRenderer(100, 100)
 
 brain = Brain.from_grid(IAN, IES, width, height, 100, 100, max_conn_dist=250)
+
 #nr = NeuronRenderer()
 print(len(brain.neurons))
 
@@ -30,13 +33,13 @@ def on_draw():
     window.clear()
 
     for neuron in brain.neurons:
-        render_neuron(neuron, 10, (50, 225, 30))
+        render_neuron(neuron, 18, (50, 225, 30))
 
     for neuron in brain.neurons:
         if neuron.just_fired:
             synapse_color = (255, 0, 0)
         else:
-            synapse_color = (255, 255, 255)
+            synapse_color = (180, 180, 180)
         for synapse in neuron.connections:
             
             render_synapse(neuron, synapse, color=synapse_color)
