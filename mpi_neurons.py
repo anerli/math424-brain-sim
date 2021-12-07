@@ -49,6 +49,7 @@ if rank == 0:
                 global_connections[connection[0]].append(connection[1])
                 valid = True
     #global_connections = list(global_connections)
+    # FIXME: Isn't correct
     print('Num Global Connections:', len(global_connections))
 else:
     config = None
@@ -100,6 +101,16 @@ tprint(neurons[0])
 
 #neurons[0].receive(200)
 
+# Assumes d1 & d2 have same keys
+def dictSumReduce(d1, d2, datatype):
+    for key in d2:
+        # if key not in d1:
+        #     d1[key] = 0
+        d1[key] += d2[key]
+    return d1
+
+dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
+
 #while True:
 for _ in range(1000000):
     update_start = time.time()
@@ -108,23 +119,31 @@ for _ in range(1000000):
 
     # Maps global neuron indices to any changes in voltages
     updates = dict()
+    for i in range(config['total_neurons']):
+        updates[i] = 0
     # Update Loop
     for neuron in neurons:
         fired = neuron.update()
         if fired:
             print('Neuron', neuron, 'fired')
             for other_idx in neuron.connections:
-                if other_idx not in updates:
-                    updates[other_idx] = 0
+                #if other_idx not in updates:
+                #    updates[other_idx] = 0
                 updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
 
-    update_time = time.time() - update_start
-    tprint('Time to Update:', update_time)
-    tprint(updates, flush=True)
+    # Transmit updates
+    #comm.barrier()
+    updates = comm.allreduce(updates, op=dictSumOp)
+    print('Size updates:', len(updates))
 
+
+    update_time = time.time() - update_start
+    tprint('Time to Update:', update_time, flush=True)
+    #tprint(updates, flush=True)
     # root: the rank which recieves the result
     overall_update_time = comm.reduce(update_time, op=MPI.MAX, root=0)
     if rank == 0:
         print('Overall Time to Update:', overall_update_time)
+    
     #comm.barrier()
     #time.sleep(1) # <- breaks mpi
