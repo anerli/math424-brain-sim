@@ -4,7 +4,8 @@ mpiexec -n 6 python mpi_neurons.py
 '''
 from mpi4py import MPI
 import colors
-from neuron import Neuron, Synapse
+from neuron import Neuron
+import time
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -24,7 +25,7 @@ if rank == 0:
     tprint('Number of threads:', comm.Get_size())
     # Communicate the total num neurons we want, etc
     config = dict(
-        total_neurons=100,
+        total_neurons=4000000,
         total_connections=20,
     )
 
@@ -41,10 +42,15 @@ config = comm.bcast(config, root=0)
 num_neurons = config['total_neurons'] // 6
 #tprint(num_neurons)
 
-def get_rank(idx):
+
+# Get relative index within a process
+def get_rel_idx(global_idx):
+    return global_idx % num_neurons
+
+def get_rank(global_idx):
     # Given the global idx of a neuron, return the rank of the thread which handles it
-    relative_idx = idx % num_neurons
-    return (idx - relative_idx) // num_neurons
+    relative_idx = get_rel_idx(global_idx)
+    return (global_idx - relative_idx) // num_neurons
 
 neurons = []
 for _ in range(num_neurons):
@@ -53,3 +59,25 @@ for _ in range(num_neurons):
 #print(get_rank(100))
 
 tprint(neurons[0])
+
+neurons[0].receive(200)
+
+#while True:
+for _ in range(1000000):
+    update_start = time.time()
+    # Maps global neuron indices to any changes in voltages
+    updates = dict()
+    # Update Loop
+    for neuron in neurons:
+        fired = neuron.update()
+        if fired:
+            for other_idx in neuron.connections:
+                if other_idx not in updates:
+                    updates[other_idx] = 0
+                updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
+
+    update_time = time.time() - update_start
+    tprint('Time to Update:', update_time)
+    tprint(updates, flush=True)
+    comm.barrier()
+    #time.sleep(1) # <- breaks mpi

@@ -32,13 +32,16 @@ class Neuron:
             self.voltage = 0
 
     # Returns a dict mapping indices to changes in voltages
+    # Returns True if fired else False
     def update(self):
         if self.fire_on_update:
             #self.fire()
             self.fire_on_update = False
+            return True
         else:
             # Decay voltage to resting linearly
             self.voltage = max(self.resting, self.voltage - self.linear_decay)
+            return False
 
     def __repr__(self):
         s = f'<Neuron voltage={self.voltage} connections={len(self.connections)}>'
