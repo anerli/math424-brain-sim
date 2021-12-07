@@ -19,6 +19,11 @@ def on_draw():
     #batch = pyglet.graphics.Batch()
     for neuron in brain.neurons:
         render_neuron(neuron, 10, (50, 225, 30))#, batch)
+
+        print(neuron.connections)
+
+        for synapse in neuron.connections:
+            render_synapse(neuron, synapse)
     #batch.draw()
     #b.draw(nr)
     #nr.draw()

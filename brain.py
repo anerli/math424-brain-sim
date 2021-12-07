@@ -13,6 +13,8 @@ def rand_dist_connect(neurons, Synapse: type, max_conn_dist=100):
 
     for n1 in neurons:
         for n2 in neurons:
+            if n1 == n2:
+                continue
             #d = dist(n1.position, n2.position)
             d = dist(n1.x, n1.y, n2.x, n2.y)
             if d > max_conn_dist:
@@ -35,10 +37,10 @@ class Brain:
         y = step_y // 2
         neurons = []
         while y < height:
-            print(f'{y=}')
+            #print(f'{y=}')
             x = step_x // 2
             while x < width:
-                print(f'{x=}')
+                #print(f'{x=}')
                 n = Neuron()
                 n.set_position(x, y)
                 #rend = NeuronRenderer(n)
@@ -47,7 +49,7 @@ class Brain:
                 x += step_x
             y += step_y
 
-        rand_dist_connect(neurons, Synapse)
+        rand_dist_connect(neurons, Synapse, max_conn_dist=200)
 
         return cls(neurons)
 

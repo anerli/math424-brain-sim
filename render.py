@@ -19,6 +19,7 @@ def render_neuron(neuron: Neuron, radius, color):#, batch):
     circle.draw()
 
 def render_synapse(presynaptic: Neuron, synapse: Synapse):#, batch):
-    line = pyglet.shapes.Line(presynaptic.x, presynaptic.y, synapse.postsynaptic_neuron.x, synapse.postsynaptic_neuron.y, width=5, color=(200,200,200))#, batch=batch)
+    print(presynaptic.x, presynaptic.y, synapse.psn.x, synapse.psn.y)
+    line = pyglet.shapes.Line(presynaptic.x, presynaptic.y, synapse.psn.x, synapse.psn.y, width=5, color=(50, 225, 30))#, batch=batch)
     line.draw()
     
