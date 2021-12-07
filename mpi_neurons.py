@@ -26,8 +26,8 @@ if rank == 0:
     tprint('Number of threads:', comm.Get_size())
     # Communicate the total num neurons we want, etc
     config = dict(
-        total_neurons=100000,#4000000,
-        total_connections=20000,
+        total_neurons=int(1e6),#4000000,
+        total_connections=int(1e6),
     )
 
     # Make total neurons divisible by 6
@@ -49,7 +49,7 @@ if rank == 0:
                 global_connections[connection[0]].append(connection[1])
                 valid = True
     #global_connections = list(global_connections)
-    #print('Connections:', global_connections)
+    print('Num Global Connections:', len(global_connections))
 else:
     config = None
     global_connections = None
@@ -98,11 +98,14 @@ for i in range(num_neurons):
 
 tprint(neurons[0])
 
-neurons[0].receive(200)
+#neurons[0].receive(200)
 
 #while True:
 for _ in range(1000000):
     update_start = time.time()
+
+    neurons[0].receive(random.random()*100)
+
     # Maps global neuron indices to any changes in voltages
     updates = dict()
     # Update Loop
