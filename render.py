@@ -1,6 +1,6 @@
 import pyglet
 
-from instant_neuron import Neuron
+from instant_neuron import Neuron, Synapse
 
 # class NeuronRenderer:
 #     radius = 20
@@ -14,6 +14,11 @@ from instant_neuron import Neuron
 # class SynapseRenderer:
 #     pass
 
-def render_neuron(neuron: Neuron, radius, color, batch):
-    circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=color, batch=batch)
+def render_neuron(neuron: Neuron, radius, color):#, batch):
+    circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=color)#, batch=batch)
     circle.draw()
+
+def render_synapse(presynaptic: Neuron, synapse: Synapse):#, batch):
+    line = pyglet.shapes.Line(presynaptic.x, presynaptic.y, synapse.postsynaptic_neuron.x, synapse.postsynaptic_neuron.y, width=5, color=(200,200,200))#, batch=batch)
+    line.draw()
+    

@@ -16,10 +16,10 @@ print(len(brain.neurons))
 @window.event
 def on_draw():
     window.clear()
-    batch = pyglet.graphics.Batch()
+    #batch = pyglet.graphics.Batch()
     for neuron in brain.neurons:
-        render_neuron(neuron, 10, (50, 225, 30), batch)
-    batch.draw()
+        render_neuron(neuron, 10, (50, 225, 30))#, batch)
+    #batch.draw()
     #b.draw(nr)
     #nr.draw()
 

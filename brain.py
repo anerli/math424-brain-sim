@@ -2,14 +2,19 @@ from instant_neuron import *
 from render import *
 import random
 
-def dist(p1, p2):
-    return ((p1.x - p2.x)**2 + (p1.y - p2.y)**2)**(1/2)
+# def dist(p1, p2):
+#     return ((p1.x - p2.x)**2 + (p1.y - p2.y)**2)**(1/2)
+
+def dist(x1, y1, x2, y2):
+    return ((x1 - x2)**2 + (y1 - y2)**2)**(1/2)
 
 
 def rand_dist_connect(neurons, Synapse: type, max_conn_dist=100):
+
     for n1 in neurons:
         for n2 in neurons:
-            d = dist(n1.position, n2.position)
+            #d = dist(n1.position, n2.position)
+            d = dist(n1.x, n1.y, n2.x, n2.y)
             if d > max_conn_dist:
                 continue
             dist_ratio = d / max_conn_dist
@@ -42,10 +47,13 @@ class Brain:
                 x += step_x
             y += step_y
 
+        rand_dist_connect(neurons, Synapse)
+
         return cls(neurons)
 
         # Do random connections with probability based on distance between neurons
         # O(n^2)
+        
 
     # def draw(self, neuron_renderer: NeuronRenderer):
     #     n_batch = pyglet.graphics.Batch()
