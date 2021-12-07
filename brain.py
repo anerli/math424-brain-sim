@@ -27,11 +27,11 @@ class Brain:
 
     @classmethod
     def from_grid(cls, Neuron: type, Synapse: type, width, height, step_x, step_y):
-        y = 0
+        y = step_y // 2
         neurons = []
         while y < height:
             print(f'{y=}')
-            x = 0
+            x = step_x // 2
             while x < width:
                 print(f'{x=}')
                 n = Neuron()
@@ -47,11 +47,11 @@ class Brain:
         # Do random connections with probability based on distance between neurons
         # O(n^2)
 
-    def draw(self, neuron_renderer: NeuronRenderer):
-        n_batch = pyglet.graphics.Batch()
-        for n in self.neurons:
-            #n.draw()
-            neuron_renderer.draw(n.x, n.y, n_batch)
+    # def draw(self, neuron_renderer: NeuronRenderer):
+    #     n_batch = pyglet.graphics.Batch()
+    #     for n in self.neurons:
+    #         #n.draw()
+    #         neuron_renderer.draw(n.x, n.y, n_batch)
 
 
 
