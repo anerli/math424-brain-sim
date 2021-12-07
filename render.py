@@ -34,7 +34,7 @@ def render_synapse(presynaptic: Neuron, synapse: Synapse):#, batch):
     start_y = presynaptic.y
     end_x = synapse.psn.x
     end_y = synapse.psn.y
-    line = pyglet.shapes.Line(start_x, start_y, end_x, end_y, width=5, color=(200, 200, 200))#, batch=batch)
+    line = pyglet.shapes.Line(start_x, start_y, end_x, end_y, width=3, color=(255, 255, 255))#, batch=batch)
     line.draw()
 
     start = np.array([start_x, start_y])
@@ -45,7 +45,7 @@ def render_synapse(presynaptic: Neuron, synapse: Synapse):#, batch):
     normalized = (end - start) / norm
 
     arrow_len = 16
-    arrow_width = 6
+    arrow_width = 5
 
     p1 = np.array([end_x, end_y])
     perp = np.array([-normalized[1], normalized[0]])
