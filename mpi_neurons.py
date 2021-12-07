@@ -39,11 +39,17 @@ config = comm.bcast(config, root=0)
 tprint(config)
 
 num_neurons = config['total_neurons'] // 6
-
 tprint(num_neurons)
+
+def get_rank(idx):
+    # Given the global idx of a neuron, return the rank of the thread which handles it
+    relative_idx = idx % num_neurons
+    return (idx - relative_idx) // num_neurons
 
 neurons = []
 for _ in range(num_neurons):
     neurons.append(Neuron())
+
+print(get_rank(100))
 
 tprint(neurons[0])
