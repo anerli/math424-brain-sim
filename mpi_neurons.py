@@ -129,10 +129,12 @@ while True:
     # for i in range(config['total_neurons']):
     #     updates[i] = 0
     # Update Loop
+    num_fired = 0
     for neuron in neurons:
         fired = neuron.update()
         if fired:
-            tprint('Neuron', neuron, 'fired')
+            num_fired += 1
+            #tprint('Neuron', neuron, 'fired')
             for other_idx in neuron.connections:
                 if other_idx not in updates:
                    updates[other_idx] = 0
@@ -155,8 +157,10 @@ while True:
     tprint('Time to Update:', update_time, flush=True)
     #tprint(updates, flush=True)
     # root: the rank which recieves the result
+    total_num_fired = comm.reduce(num_fired, op=MPI.SUM, root=0)
     overall_update_time = comm.reduce(update_time, op=MPI.MAX, root=0)
     if rank == 0:
+        print('Number of Neurons Fired this Update:', total_num_fired)
         print('Overall Time to Update:', overall_update_time)
     
     #comm.barrier()
