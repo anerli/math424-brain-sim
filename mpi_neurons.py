@@ -157,7 +157,7 @@ for _ in range(1000):
             for other_idx in neuron.connections:
                 if other_idx not in updates:
                     updates[other_idx] = 0
-                    updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
+                updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
 
     # Transmit updates
     #comm.barrier()
