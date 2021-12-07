@@ -69,6 +69,7 @@ num_neurons = config['total_neurons'] // comm.Get_size()
 tprint('Number of neurons:', num_neurons)
 
 num_stim = config['total_stimulus'] // comm.Get_size()
+tprint('Num Stim:', num_stim)
 
 
 # Get relative index within a process
@@ -181,5 +182,10 @@ for _ in range(1000):
 
 if rank == 0:
     import pandas as pd
+    import sys
     df = pd.DataFrame(list(zip(update_time_log, num_fired_log)), columns=['UpdateTime', 'NeuronsFired'])
-    df.to_csv('log.csv')
+
+    fname = 'log.csv'
+    if len(sys.argv) > 1:
+        fname = sys.argv[1]
+    df.to_csv(fname)
