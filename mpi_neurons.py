@@ -4,6 +4,7 @@ mpiexec -n 6 python mpi_neurons.py
 '''
 from mpi4py import MPI
 import colors
+from neuron import Neuron, Synapse
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -23,7 +24,8 @@ if rank == 0:
     tprint('Number of threads:', comm.Get_size())
     # Communicate the total num neurons we want, etc
     config = dict(
-        total_neurons=100
+        total_neurons=100,
+        total_connections=20,
     )
 
     # Make total neurons divisible by 6
@@ -35,3 +37,13 @@ else:
 config = comm.bcast(config, root=0)
 
 tprint(config)
+
+num_neurons = config['total_neurons'] // 6
+
+tprint(num_neurons)
+
+neurons = []
+for _ in range(num_neurons):
+    neurons.append(Neuron())
+
+tprint(neurons[0])
