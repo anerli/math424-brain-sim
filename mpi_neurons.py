@@ -38,9 +38,11 @@ else:
 config = comm.bcast(config, root=0)
 
 #tprint(config)
+# 2 threads: 666666
+# 6 threads: 666667
 
-num_neurons = config['total_neurons'] // 6
-#tprint(num_neurons)
+num_neurons = config['total_neurons'] // comm.Get_size()
+tprint('Number of neurons:', num_neurons)
 
 
 # Get relative index within a process
@@ -79,5 +81,10 @@ for _ in range(1000000):
     update_time = time.time() - update_start
     tprint('Time to Update:', update_time)
     tprint(updates, flush=True)
-    comm.barrier()
+
+    # root: the rank which recieves the result
+    overall_update_time = comm.reduce(update_time, op=MPI.MAX, root=0)
+    if rank == 0:
+        print('Overall Time to Update:', overall_update_time)
+    #comm.barrier()
     #time.sleep(1) # <- breaks mpi
