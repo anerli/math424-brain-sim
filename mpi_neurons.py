@@ -143,6 +143,11 @@ for _ in range(1000000):
     updates = comm.allreduce(updates, op=dictSumOp)
     tprint('Size updates:', len(updates))
 
+    # Transfer updates to this process
+    for rel_idx, neuron in enumerate(neurons):
+        glob_idx = get_global_idx(rel_idx)
+        if glob_idx in updates:
+            neuron.receive(updates[glob_idx])
 
     update_time = time.time() - update_start
     tprint('Time to Update:', update_time, flush=True)
