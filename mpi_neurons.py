@@ -29,10 +29,7 @@ if rank == 0:
     # Make total neurons divisible by 6
     while config['total_neurons'] % comm.Get_size() != 0:
         config['total_neurons'] += 1
-    #comm.bcast(config)
 else:
-    # config = comm.recv()
-    # tprint(config)
     config = None
 
 config = comm.bcast(config, root=0)
