@@ -3,11 +3,13 @@ from render import *
 from brain import *
 import pyglet
 
-window = pyglet.window.Window(800, 600)
+width=800
+height=600
+window = pyglet.window.Window(width, height)
 
 #nr = NeuronRenderer(100, 100)
 
-b = Brain.from_grid(IAN, IES, 800, 600, 100, 100)
+b = Brain.from_grid(IAN, IES, width, window, 100, 100)
 nr = NeuronRenderer()
 print(len(b.neurons))
 
