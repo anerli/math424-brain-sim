@@ -33,7 +33,7 @@ class Brain:
         #self.S = Synapse
 
     @classmethod
-    def from_grid(cls, Neuron: type, Synapse: type, width, height, step_x, step_y):
+    def from_grid(cls, Neuron: type, Synapse: type, width, height, step_x, step_y, max_conn_dist):
         y = step_y // 2
         neurons = []
         while y < height:
@@ -51,7 +51,7 @@ class Brain:
 
         # Do random connections with probability based on distance between neurons
         # O(n^2)
-        rand_dist_connect(neurons, Synapse, max_conn_dist=200)
+        rand_dist_connect(neurons, Synapse, max_conn_dist=max_conn_dist)
 
         return cls(neurons)
 

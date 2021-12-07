@@ -27,7 +27,8 @@ def direction(x1, x2, y1, y2):
 
 def render_neuron(neuron: Neuron, radius, color):#, batch):
     #circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=color)#, batch=batch)
-    circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=(int(255*(1-(neuron.voltage / neuron.threshold))), 255, 255))
+    fill = int(255*(neuron.voltage / neuron.threshold))
+    circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=(255, 255-fill, 255-fill))
     circle.draw()
 
 def render_synapse(presynaptic: Neuron, synapse: Synapse, color=(255, 255, 255)):#, batch):
