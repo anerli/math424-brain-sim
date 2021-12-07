@@ -118,7 +118,12 @@ def dictSumReduce(d1, d2, datatype):
 #dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 
-while True:
+if rank == 0:
+    num_fired_log = []
+    update_time_log = []
+
+
+for _ in range(10):
     update_start = time.time()
 
     # Up to 100 "stimulus" neurons which recieve random voltages automatically
@@ -137,8 +142,8 @@ while True:
             #tprint('Neuron', neuron, 'fired')
             for other_idx in neuron.connections:
                 if other_idx not in updates:
-                   updates[other_idx] = 0
-                updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
+                    updates[other_idx] = 0
+                    updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
 
     # Transmit updates
     #comm.barrier()
@@ -154,14 +159,21 @@ while True:
             neuron.receive(updates[glob_idx])
 
     update_time = time.time() - update_start
-    tprint('Time to Update:', update_time, flush=True)
+    #tprint('Time to Update:', update_time, flush=True)
     #tprint(updates, flush=True)
     # root: the rank which recieves the result
     total_num_fired = comm.reduce(num_fired, op=MPI.SUM, root=0)
     overall_update_time = comm.reduce(update_time, op=MPI.MAX, root=0)
     if rank == 0:
         print('Number of Neurons Fired this Update:', total_num_fired)
-        print('Overall Time to Update:', overall_update_time)
+        print('Overall Time to Update:', overall_update_time, flush=True)
+        num_fired_log.append(total_num_fired)
+        update_time_log.append(overall_update_time)
     
     #comm.barrier()
     #time.sleep(1) # <- breaks mpi
+
+if rank == 0:
+    import pandas as pd
+    df = pd.DataFrame(list(zip(update_time_log, num_fired_log)), columns=['UpdateTime', 'NeuronsFired'])
+    df.to_csv('log.csv')
