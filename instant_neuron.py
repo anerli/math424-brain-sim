@@ -73,7 +73,7 @@ class IAN(Neuron):
 
 # Instantaneous Electrical Synapse
 class IES(Synapse):
-    voltage_forward_factor = 0.5
+    voltage_forward_factor = 0.2
     def __init__(self, postsynaptic_neuron):
         self.psn = postsynaptic_neuron
 
