@@ -1,6 +1,13 @@
 '''
 Run:
 mpiexec -n 6 python mpi_neurons.py
+
+mpiexec -n 6 python mpi_neurons.py 6p.csv
+
+s = ''
+for n in range(6,0,-1):
+    s += f'mpiexec -n {n} python mpi_neurons.py {n}p.csv;'
+print(s)
 '''
 from mpi4py import MPI
 import colors
