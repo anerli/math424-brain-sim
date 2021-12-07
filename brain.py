@@ -49,12 +49,16 @@ class Brain:
                 x += step_x
             y += step_y
 
+        # Do random connections with probability based on distance between neurons
+        # O(n^2)
         rand_dist_connect(neurons, Synapse, max_conn_dist=200)
 
         return cls(neurons)
 
-        # Do random connections with probability based on distance between neurons
-        # O(n^2)
+    def update(self):
+        pass
+
+        
         
 
     # def draw(self, neuron_renderer: NeuronRenderer):

@@ -26,15 +26,16 @@ def direction(x1, x2, y1, y2):
     return diff_x / size, diff_y / size
 
 def render_neuron(neuron: Neuron, radius, color):#, batch):
-    circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=color)#, batch=batch)
+    #circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=color)#, batch=batch)
+    circle = pyglet.shapes.Circle(neuron.x, neuron.y, radius=radius, color=(int(255*(1-(neuron.voltage / neuron.threshold))), 255, 255))
     circle.draw()
 
-def render_synapse(presynaptic: Neuron, synapse: Synapse):#, batch):
+def render_synapse(presynaptic: Neuron, synapse: Synapse, color=(255, 255, 255)):#, batch):
     start_x = presynaptic.x
     start_y = presynaptic.y
     end_x = synapse.psn.x
     end_y = synapse.psn.y
-    line = pyglet.shapes.Line(start_x, start_y, end_x, end_y, width=3, color=(255, 255, 255))#, batch=batch)
+    line = pyglet.shapes.Line(start_x, start_y, end_x, end_y, width=3, color=color)#, batch=batch)
     line.draw()
 
     start = np.array([start_x, start_y])
@@ -52,11 +53,11 @@ def render_synapse(presynaptic: Neuron, synapse: Synapse):#, batch):
     p2 = p1 - normalized*arrow_len + perp*arrow_width#np.cross(normalized, [0,1])*arrow_width
     p3 = p1 - normalized*arrow_len - perp*arrow_width#np.cross(normalized, [1,0])*arrow_width
 
-    print(p1, p2, p3)
+    #print(p1, p2, p3)
 
     
     # dx, dy = direction(start_x, start_y, end_x, end_y)
     # arrow_len = 20
     # arrow_width
-    triangle = pyglet.shapes.Triangle(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1])
+    triangle = pyglet.shapes.Triangle(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], color=color)
     triangle.draw()

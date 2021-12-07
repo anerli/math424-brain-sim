@@ -21,6 +21,8 @@ class IAN(Neuron):
         self.connections = []
         self.voltage = IAN.resting
         self.id = next(IAN.id_iter)
+        self.fire_on_update = False
+        self.just_fired = False
         #self.renderer = None
         #self.position = None
 
@@ -41,15 +43,22 @@ class IAN(Neuron):
             synapse.fire(self.threshold)
 
     # Receive voltage v from a synapse
-    def recieve(self, v):
+    def receive(self, v):
         self.voltage += v
         if self.voltage >= self.threshold:
-            self.fire()
+            #self.fire()
+            self.fire_on_update = True
             self.voltage = 0
 
     def update(self):
-        # Decay voltage to resting linearly
-        self.voltage = max(IAN.resting, self.voltage - IAN.linear_decay)
+        self.just_fired = False
+        if self.fire_on_update:
+            self.fire()
+            self.fire_on_update = False
+            self.just_fired = True
+        else:
+            # Decay voltage to resting linearly
+            self.voltage = max(IAN.resting, self.voltage - IAN.linear_decay)
 
     #def draw(self):
         # if self.renderer is None:
@@ -69,4 +78,4 @@ class IES(Synapse):
         self.psn = postsynaptic_neuron
 
     def fire(self, v):
-        self.psn.recieve(v * IES.voltage_forward_factor)
+        self.psn.receive(v * IES.voltage_forward_factor)
