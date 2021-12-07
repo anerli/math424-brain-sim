@@ -102,13 +102,20 @@ tprint(neurons[0])
 #neurons[0].receive(200)
 
 # Assumes d1 & d2 have same keys
+# def dictSumReduce(d1, d2, datatype):
+#     for key in d2:
+#         # if key not in d1:
+#         #     d1[key] = 0
+#         d1[key] += d2[key]
+#     return d1
 def dictSumReduce(d1, d2, datatype):
     for key in d2:
-        # if key not in d1:
-        #     d1[key] = 0
+        if key not in d1:
+            d1[key] = 0
         d1[key] += d2[key]
     return d1
 
+#dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 
 #while True:
@@ -119,16 +126,16 @@ for _ in range(1000000):
 
     # Maps global neuron indices to any changes in voltages
     updates = dict()
-    for i in range(config['total_neurons']):
-        updates[i] = 0
+    # for i in range(config['total_neurons']):
+    #     updates[i] = 0
     # Update Loop
     for neuron in neurons:
         fired = neuron.update()
         if fired:
             tprint('Neuron', neuron, 'fired')
             for other_idx in neuron.connections:
-                #if other_idx not in updates:
-                #    updates[other_idx] = 0
+                if other_idx not in updates:
+                   updates[other_idx] = 0
                 updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
 
     # Transmit updates
