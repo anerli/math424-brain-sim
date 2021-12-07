@@ -20,10 +20,15 @@ def tprint(*args, **kwargs):
 tprint(f'I am thread {rank}')
 
 if rank == 0:
+    tprint('Number of threads:', comm.Get_size())
     # Communicate the total num neurons we want, etc
     config = dict(
         total_neurons=100
     )
+
+    # Make total neurons divisible by 6
+    while config['total_neurons'] % comm.Get_size() != 0:
+        config['total_neurons'] += 1
     #comm.bcast(config)
 else:
     # config = comm.recv()
@@ -32,4 +37,4 @@ else:
 
 config = comm.bcast(config, root=0)
 
-print(config)
+tprint(config)
