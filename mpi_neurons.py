@@ -27,7 +27,7 @@ if rank == 0:
     # Communicate the total num neurons we want, etc
     config = dict(
         total_neurons=int(1e6),#4000000,
-        total_connections=int(1e6),
+        total_connections=int(1e7),
     )
 
     # Make total neurons divisible by 6
@@ -118,11 +118,10 @@ def dictSumReduce(d1, d2, datatype):
 #dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 
-#while True:
-for _ in range(1000000):
+while True:
     update_start = time.time()
 
-    #neurons[0].receive(random.random()*100)
+    # Up to 100 "stimulus" neurons which recieve random voltages automatically
     for i in range(min(100, num_neurons)): neurons[i].receive(random.random()*100)
 
     # Maps global neuron indices to any changes in voltages
