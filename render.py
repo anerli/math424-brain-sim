@@ -54,11 +54,5 @@ def render_synapse(presynaptic: Neuron, synapse: Synapse, color=(255, 255, 255))
     p2 = p1 - normalized*arrow_len + perp*arrow_width#np.cross(normalized, [0,1])*arrow_width
     p3 = p1 - normalized*arrow_len - perp*arrow_width#np.cross(normalized, [1,0])*arrow_width
 
-    #print(p1, p2, p3)
-
-    
-    # dx, dy = direction(start_x, start_y, end_x, end_y)
-    # arrow_len = 20
-    # arrow_width
     triangle = pyglet.shapes.Triangle(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], color=color)
     triangle.draw()
