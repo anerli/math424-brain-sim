@@ -9,10 +9,13 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 def tprint(*args, **kwargs):
+    if rank > 5:
+        print(*args, **kwargs)
+        return
     tcolors = [colors.RED, colors.GREEN, colors.YELLOW, colors.BLUE, colors.MAGENTA, colors.CYAN]
     print(tcolors[rank], end='')
-    print(*args, **kwargs)
-    print(colors.RESET, end='')
+    print(*args, **kwargs, end='')
+    print(colors.RESET)
 
 tprint(f'I am thread {rank}')
 
