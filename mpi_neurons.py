@@ -35,7 +35,7 @@ if rank == 0:
         config['total_neurons'] += 1
 
     # Generate random global connections
-    global_connections = set()
+    global_connections = dict()
     for _ in range(config['total_connections']):
         valid = False
         while not valid:
@@ -43,9 +43,12 @@ if rank == 0:
             if connection[0] == connection[1] or connection in global_connections:
                 valid = False
             else:
-                global_connections.add(connection)
+                #global_connections.add(connection)
+                if connection[0] not in global_connections:
+                    global_connections[connection[0]] = []
+                global_connections[connection[0]].append(connection[1])
                 valid = True
-    global_connections = list(global_connections)
+    #global_connections = list(global_connections)
     #print('Connections:', global_connections)
 else:
     config = None
@@ -76,9 +79,13 @@ def get_rank(global_idx):
 neurons = []
 for i in range(num_neurons):
     neuron = Neuron()
-    for connection in global_connections:
-        if get_global_idx(i) == connection[0]:
-            neuron.connect(connection[1])
+    glob_idx = get_global_idx(i)
+    if glob_idx in global_connections:
+        for other_idx in global_connections[glob_idx]:
+            neuron.connect(other_idx)
+    # for connection in global_connections:
+    #     if get_global_idx(i) == connection[0]:
+    #         neuron.connect(connection[1])
     neurons.append(neuron)
 
 # Setup Connections From Globals
