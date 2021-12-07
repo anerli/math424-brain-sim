@@ -122,7 +122,8 @@ dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 for _ in range(1000000):
     update_start = time.time()
 
-    neurons[0].receive(random.random()*100)
+    #neurons[0].receive(random.random()*100)
+    for i in range(min(100, num_neurons)): neurons[i].receive(random.random()*100)
 
     # Maps global neuron indices to any changes in voltages
     updates = dict()
@@ -141,14 +142,14 @@ for _ in range(1000000):
     # Transmit updates
     #comm.barrier()
     updates = comm.allreduce(updates, op=dictSumOp)
-    tprint('Size updates:', len(updates))
-    tprint(updates)
+    #tprint('Size updates:', len(updates))
+    #tprint(updates)
 
     # Transfer updates to this process
     for rel_idx, neuron in enumerate(neurons):
         glob_idx = get_global_idx(rel_idx)
         if glob_idx in updates:
-            tprint('Update accepted')
+            #tprint('Update accepted')
             neuron.receive(updates[glob_idx])
 
     update_time = time.time() - update_start
