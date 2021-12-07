@@ -36,10 +36,10 @@ else:
 
 config = comm.bcast(config, root=0)
 
-tprint(config)
+#tprint(config)
 
 num_neurons = config['total_neurons'] // 6
-tprint(num_neurons)
+#tprint(num_neurons)
 
 def get_rank(idx):
     # Given the global idx of a neuron, return the rank of the thread which handles it
@@ -50,6 +50,6 @@ neurons = []
 for _ in range(num_neurons):
     neurons.append(Neuron())
 
-print(get_rank(100))
+#print(get_rank(100))
 
 tprint(neurons[0])
