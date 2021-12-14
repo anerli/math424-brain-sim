@@ -1,14 +1,3 @@
-'''
-Run:
-mpiexec -n 6 python mpi_neurons.py
-
-mpiexec -n 6 python mpi_neurons.py 6p.csv
-
-s = ''
-for n in range(6,0,-1):
-    s += f'mpiexec -n {n} python mpi_neurons.py {n}p.csv;'
-print(s)
-'''
 from mpi4py import MPI
 import colors
 from neuron import Neuron
@@ -54,23 +43,17 @@ if rank == 0:
             if connection[0] == connection[1] or connection in global_connections:
                 valid = False
             else:
-                #global_connections.add(connection)
                 if connection[0] not in global_connections:
                     global_connections[connection[0]] = []
                 global_connections[connection[0]].append(connection[1])
                 valid = True
-    #global_connections = list(global_connections)
-    # FIXME: Isn't correct
-    print('Num Global Connections:', len(global_connections))
+
 else:
     config = None
     global_connections = None
 
 config = comm.bcast(config, root=0)
 global_connections = comm.bcast(global_connections, root=0)
-#tprint(config)
-# 2 threads: 666666
-# 6 threads: 666667
 
 num_neurons = config['total_neurons'] // comm.Get_size()
 tprint('Number of neurons:', num_neurons)
@@ -98,30 +81,9 @@ for i in range(num_neurons):
     if glob_idx in global_connections:
         for other_idx in global_connections[glob_idx]:
             neuron.connect(other_idx)
-    # for connection in global_connections:
-    #     if get_global_idx(i) == connection[0]:
-    #         neuron.connect(connection[1])
     neurons.append(neuron)
 
-# Setup Connections From Globals
-#for i in range(num_neurons):
-    
 
-
-
-#print(get_rank(100))
-
-tprint(neurons[0])
-
-#neurons[0].receive(200)
-
-# Assumes d1 & d2 have same keys
-# def dictSumReduce(d1, d2, datatype):
-#     for key in d2:
-#         # if key not in d1:
-#         #     d1[key] = 0
-#         d1[key] += d2[key]
-#     return d1
 def dictSumReduce(d1, d2, datatype):
     for key in d2:
         if key not in d1:
@@ -129,7 +91,6 @@ def dictSumReduce(d1, d2, datatype):
         d1[key] += d2[key]
     return d1
 
-#dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 dictSumOp = MPI.Op.Create(dictSumReduce, commute=True)
 
 if rank == 0:
@@ -145,8 +106,7 @@ for _ in range(1000):
 
     # Maps global neuron indices to any changes in voltages
     updates = dict()
-    # for i in range(config['total_neurons']):
-    #     updates[i] = 0
+
     # Update Loop
     num_fired = 0
     for neuron in neurons:
@@ -160,10 +120,8 @@ for _ in range(1000):
                 updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
 
     # Transmit updates
-    #comm.barrier()
+
     updates = comm.allreduce(updates, op=dictSumOp)
-    #tprint('Size updates:', len(updates))
-    #tprint(updates)
 
     # Transfer updates to this process
     for rel_idx, neuron in enumerate(neurons):
@@ -182,9 +140,6 @@ for _ in range(1000):
         print('Overall Time to Update:', overall_update_time, flush=True)
         num_fired_log.append(total_num_fired)
         update_time_log.append(overall_update_time)
-    
-    #comm.barrier()
-    #time.sleep(1) # <- breaks mpi
 
 if rank == 0:
     import pandas as pd
