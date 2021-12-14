@@ -169,7 +169,6 @@ for _ in range(1000):
     for rel_idx, neuron in enumerate(neurons):
         glob_idx = get_global_idx(rel_idx)
         if glob_idx in updates:
-            #tprint('Update accepted')
             neuron.receive(updates[glob_idx])
 
     update_time = time.time() - update_start
