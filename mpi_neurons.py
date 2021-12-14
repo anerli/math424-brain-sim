@@ -22,7 +22,7 @@ if rank == 0:
     tprint('Number of threads:', comm.Get_size())
     # Communicate the total num neurons we want, etc
     config = dict(
-        total_neurons=int(1e6),#4000000,
+        total_neurons=int(1e6),
         total_connections=int(1e7),
         total_stimulus=600
     )
@@ -47,7 +47,6 @@ if rank == 0:
                     global_connections[connection[0]] = []
                 global_connections[connection[0]].append(connection[1])
                 valid = True
-
 else:
     config = None
     global_connections = None
@@ -120,7 +119,6 @@ for _ in range(1000):
                 updates[other_idx] += neuron.threshold * neuron.voltage_forward_factor
 
     # Transmit updates
-
     updates = comm.allreduce(updates, op=dictSumOp)
 
     # Transfer updates to this process
